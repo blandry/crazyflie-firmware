@@ -18,7 +18,7 @@ if len(sys.argv)<3:
     sys.exit(1)
 
 #Get the build repos information
-if os.path.isdir(".git"):
+if True:
     # git
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"]).strip()
 
