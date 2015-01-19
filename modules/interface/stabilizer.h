@@ -31,6 +31,6 @@
 void stabilizerInit(void);
 
 bool stabilizerTest(void);
-
+void stabilizerTask(void*);
 
 #endif /* STABALIZER_H_ */
