@@ -115,7 +115,6 @@ static uint16_t altHoldMinThrust    = 00000; // minimum hover thrust - not used 
 static uint16_t altHoldBaseThrust   = 43000; // approximate throttle needed when in perfect hover. More weight/older battery can use a higher value
 static uint16_t altHoldMaxThrust    = 60000; // max altitude hold thrust
 
-
 RPYType rollType;
 RPYType pitchType;
 RPYType yawType;
@@ -504,4 +503,3 @@ PARAM_ADD(PARAM_UINT16, baseThrust, &altHoldBaseThrust)
 PARAM_ADD(PARAM_UINT16, maxThrust, &altHoldMaxThrust)
 PARAM_ADD(PARAM_UINT16, minThrust, &altHoldMinThrust)
 PARAM_GROUP_STOP(altHold)
-

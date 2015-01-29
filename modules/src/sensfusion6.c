@@ -29,8 +29,9 @@
 #include "sensfusion6.h"
 #include "imu.h"
 #include "param.h"
+#include "log.h"
 
-//#define MADWICK_QUATERNION_IMU
+// #define MADWICK_QUATERNION_IMU
 
 #ifdef MADWICK_QUATERNION_IMU
   #define BETA_DEF     0.01f    // 2 * proportional gain
@@ -271,8 +272,6 @@ float invSqrt(float x)
   return y;
 }
 
-
-
 PARAM_GROUP_START(sensorfusion6)
 #ifdef MADWICK_QUATERNION_IMU
 PARAM_ADD(PARAM_FLOAT, beta, &beta)
@@ -281,3 +280,10 @@ PARAM_ADD(PARAM_FLOAT, kp, &twoKp)
 PARAM_ADD(PARAM_FLOAT, ki, &twoKi)
 #endif
 PARAM_GROUP_STOP(sensorfusion6)
+
+LOG_GROUP_START(quaternions)
+LOG_ADD(LOG_FLOAT, q1, &q0)
+LOG_ADD(LOG_FLOAT, q2, &q1)
+LOG_ADD(LOG_FLOAT, q3, &q2)
+LOG_ADD(LOG_FLOAT, q4, &q3)
+LOG_GROUP_STOP(quaternions)
