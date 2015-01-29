@@ -422,6 +422,15 @@ static float deadband(float value, const float threshold)
   return value;
 }
 
+LOG_GROUP_START(attitude)
+LOG_ADD(LOG_FLOAT, roll, &eulerRollActual)
+LOG_ADD(LOG_FLOAT, pitch, &eulerPitchActual)
+LOG_ADD(LOG_FLOAT, yaw, &eulerYawActual)
+LOG_ADD(LOG_FLOAT, rolld, &gyro.x)
+LOG_ADD(LOG_FLOAT, pitchd, &gyro.y)
+LOG_ADD(LOG_FLOAT, yawd, &gyro.z)
+LOG_GROUP_STOP(attitude)
+
 LOG_GROUP_START(stabilizer)
 LOG_ADD(LOG_FLOAT, roll, &eulerRollActual)
 LOG_ADD(LOG_FLOAT, pitch, &eulerPitchActual)
