@@ -11,6 +11,7 @@
 #include "system.h"
 #include "debug.h"
 #include "pm.h"
+#include "stabilizer.h"
 
 struct InputCrtpValues
 {
@@ -38,6 +39,8 @@ static float thrust1;
 static float thrust2;
 static float thrust3;
 static float thrust4;
+
+#define ATTITUDE_UPDATE_RATE_DIVIDER  2
 
 static void offboardCtrlCrtpCB(CRTPPacket* pk);
 void offboardCtrlTask(void* param);
@@ -146,9 +149,15 @@ void offboardCtrlTask(void* param)
   vTaskSetApplicationTaskTag(0, (void*)TASK_OFFBOARDCTRL_ID_NBR);
   systemWaitStart();
   uint32_t lastWakeTime = xTaskGetTickCount();
+  uint32_t attitudeCounter = 0;
   while(1)
   {
     vTaskDelayUntil(&lastWakeTime, F2T(THRUSTS_UPDATE_FREQ));
+    if (++attitudeCounter >= ATTITUDE_UPDATE_RATE_DIVIDER)
+    {
+      stabilizerUpdateEuler();
+      attitudeCounter = 0;
+    }
     updateThrusts();
   }
 }

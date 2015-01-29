@@ -136,6 +136,7 @@ static void stabilizerAltHoldUpdate(void);
 static void distributePower(const uint16_t thrust, const int16_t roll,
                             const int16_t pitch, const int16_t yaw);
 static uint16_t limitThrust(int32_t value);
+void stabilizerUpdateEuler(void);
 void stabilizerTask(void* param);
 static float constrain(float value, const float minVal, const float maxVal);
 static float deadband(float value, const float threshold);
@@ -167,6 +168,17 @@ bool stabilizerTest(void)
   pass &= controllerTest();
 
   return pass;
+}
+
+void stabilizerUpdateEuler(void)
+{
+  // Magnetometer not yet used more then for logging.
+  imu9Read(&gyro, &acc, &mag);
+  if (imu6IsCalibrated())
+  {
+    sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, FUSION_UPDATE_DT);
+    sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual, &eulerYawActual);
+  }
 }
 
 void stabilizerTask(void* param)
