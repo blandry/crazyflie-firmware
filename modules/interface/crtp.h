@@ -43,6 +43,7 @@ typedef enum {
   CRTP_PORT_LOG         = 0x05,
   CRTP_PORT_OFFBOARDCTRL= 0x06,
   CRTP_PORT_SUPERVISOR  = 0x07,
+  CRTP_PORT_SENSORS     = 0x08,
   CRTP_PORT_LINK        = 0x0F,
 } CRTPPort;
 
@@ -107,6 +108,12 @@ void crtpRegisterPortCB(int port, CrtpCallback cb);
  * @param[in] p CRTPPacket to send
  */
 int crtpSendPacket(CRTPPacket *p);
+
+/**
+* Sends a packet immediatly, does not use the TX stack
+* Use with caution
+*/
+void crtpSendPacketNoWait(CRTPPacket *p);
 
 /**
  * Put a packet in the TX task

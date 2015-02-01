@@ -28,6 +28,7 @@
 #include "task.h"
 
 #include "math.h"
+#include "string.h"
 
 #include "system.h"
 #include "pm.h"
@@ -42,6 +43,7 @@
 #include "ledseq.h"
 #include "param.h"
 #include "ms5611.h"
+#include "crtp.h"
 
 #undef max
 #define max(a,b) ((a) > (b) ? (a) : (b))
@@ -140,6 +142,8 @@ void stabilizerTask(void* param);
 static float constrain(float value, const float minVal, const float maxVal);
 static float deadband(float value, const float threshold);
 
+static CRTPPacket p;
+
 void stabilizerInit(void)
 {
   if(isInit)
@@ -175,8 +179,20 @@ void stabilizerUpdateEuler(void)
   imu9Read(&gyro, &acc, &mag);
   if (imu6IsCalibrated())
   {
+
     sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, FUSION_UPDATE_DT);
     sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual, &eulerYawActual);
+
+    p.header=CRTP_HEADER(CRTP_PORT_SENSORS, 0);
+    p.size = 6*4;
+    memcpy(p.data,&eulerRollActual,4);
+    memcpy(p.data+4,&eulerPitchActual,4);
+    memcpy(p.data+8,&eulerYawActual,4);
+    memcpy(p.data+12,&(gyro.x),4);
+    memcpy(p.data+16,&(gyro.y),4);
+    memcpy(p.data+20,&(gyro.z),4);
+    crtpSendPacketNoWait(&p);
+
   }
 }
 

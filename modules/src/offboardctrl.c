@@ -103,18 +103,23 @@ static void updateThrusts(void)
 {
   offboardCtrlWatchdog();
 
-  Va = pmGetBatteryVoltage();
-  Vm = 4;
+  // TILQR
+  // Va = pmGetBatteryVoltage();
+  // Vm = 4;
+  // omega1 = sqrt(limit_omegasqu(inputCmd.input1));
+  // omega2 = sqrt(limit_omegasqu(inputCmd.input2));
+  // omega3 = sqrt(limit_omegasqu(inputCmd.input3));
+  // omega4 = sqrt(limit_omegasqu(inputCmd.input4));
+  // thrust1 = ((Vm/Va)*omega1+A_OFFSET)*10000;
+  // thrust2 = ((Vm/Va)*omega2+A_OFFSET)*10000;
+  // thrust3 = ((Vm/Va)*omega3+A_OFFSET)*10000;
+  // thrust4 = ((Vm/Va)*omega4+A_OFFSET)*10000;
 
-  omega1 = sqrt(limit_omegasqu(inputCmd.input1));
-  omega2 = sqrt(limit_omegasqu(inputCmd.input2));
-  omega3 = sqrt(limit_omegasqu(inputCmd.input3));
-  omega4 = sqrt(limit_omegasqu(inputCmd.input4));
-  
-  thrust1 = ((Vm/Va)*omega1+A_OFFSET)*10000;
-  thrust2 = ((Vm/Va)*omega2+A_OFFSET)*10000;
-  thrust3 = ((Vm/Va)*omega3+A_OFFSET)*10000;
-  thrust4 = ((Vm/Va)*omega4+A_OFFSET)*10000;
+  // PD
+  thrust1 = inputCmd.input1;
+  thrust2 = inputCmd.input2;
+  thrust3 = inputCmd.input3;
+  thrust4 = inputCmd.input4; 
 
   motorsSetRatio(MOTOR_M1,(uint32_t) limit_thrust(thrust1));
   motorsSetRatio(MOTOR_M2,(uint32_t) limit_thrust(thrust2));
