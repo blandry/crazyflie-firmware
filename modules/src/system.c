@@ -46,7 +46,7 @@
 #include "freeRTOSdebug.h"
 #include "uart.h"
 #include "comm.h"
-#include "supervisor.h"
+#include "offboardctrl.h"
 
 #include "console.h"
 
@@ -128,12 +128,12 @@ void systemTask(void *arg)
               *((int*)(0x1FFFF7E8+8)), *((int*)(0x1FFFF7E8+4)),
               *((int*)(0x1FFFF7E8+0)), *((short*)(0x1FFFF7E0)));
 
-  supervisorInit();
+  offboardCtrlInit();
 
   //Test the modules
   pass &= systemTest();
   pass &= commTest();
-  pass &= supervisorTest();
+  pass &= offboardCtrlTest();
 
   //Start the firmware
   if(pass)
