@@ -27,8 +27,6 @@ struct InputCrtpValues
   int type;
 } __attribute__((packed));
 
-#define OFFBOARDCTRL_UPDATE_FREQ 100
-
 static Axis3f gyro; // Gyro axis data in deg/s
 static Axis3f acc;  // Accelerometer axis data in mG
 static float eulerRollActual;
@@ -54,7 +52,7 @@ static CRTPPacket pk;
 
 static void offboardCtrlCrtpCB(CRTPPacket* pk);
 static void offboardCtrlWatchdogReset(void);
-static void updateSensors(void);
+static void updateSensors(float);
 static void updateThrusts(void);
 void offboardCtrlTask(void* param);
 
@@ -165,12 +163,12 @@ static void updateThrusts(void)
   motorsSetRatio(MOTOR_M4,(uint16_t) thrust4);
 }
 
-static void updateSensors(void)
+static void updateSensors(float dt)
 {
   imu6Read(&gyro, &acc);
   if (imu6IsCalibrated())
   {
-    sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, 1.0/OFFBOARDCTRL_UPDATE_FREQ);
+    sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, dt);
     sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual, &eulerYawActual);
     memcpy(pk.data,&eulerRollActual,4);
     memcpy(pk.data+4,&eulerPitchActual,4);
@@ -184,16 +182,15 @@ static void updateSensors(void)
 
 void offboardCtrlTask(void* param)
 {
+  uint32_t lastWakeTime;
   vTaskSetApplicationTaskTag(0, (void*)TASK_OFFBOARDCTRL_ID_NBR);
   systemWaitStart();
 
-  uint32_t xLastWakeTime;
-  xLastWakeTime = xTaskGetTickCount();
-  for(;;)
-  {
-    vTaskDelayUntil(&xLastWakeTime, F2T(OFFBOARDCTRL_UPDATE_FREQ));
-    
+  lastWakeTime = xTaskGetTickCount();
+  while(1)
+  { 
+    vTaskDelayUntil(&lastWakeTime, F2T(100.0));
+    updateSensors((float)(1.0/100.0));
     updateThrusts();
-    updateSensors();
   }
 }
